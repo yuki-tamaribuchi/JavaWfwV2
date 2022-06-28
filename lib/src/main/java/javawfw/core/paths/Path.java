@@ -2,17 +2,20 @@ package javawfw.core.paths;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.lang.reflect.Method;
 
 import javawfw.http.HttpMethod;
 
 
 public class Path {
 	private String path;
+	private Method method;
 	private HttpMethod httpMethod;
 	private Pattern regexPattern;
 	
-	public Path(String path, HttpMethod httpMethod) {
+	public Path(String path, Method method, HttpMethod httpMethod) {
 		this.path = path;
+		this.method = method;
 		this.httpMethod = httpMethod;
 		regexPattern = getRegexPattern(path);
 	}
@@ -32,5 +35,9 @@ public class Path {
 		boolean isHttpMethodMatched = this.httpMethod == httpMethod;
 		boolean isMatched = isUrlMatched && isHttpMethodMatched;
 		return isMatched;
+	}
+
+	public Method getMethod() {
+		return method;
 	}
 }
