@@ -3,6 +3,7 @@ package javawfw;
 import java.util.List;
 import java.util.Map;
 
+import javawfw.core.server.Server;
 import javawfw.core.components.ComponentScanner;
 import javawfw.core.paths.PathRegister;
 import javawfw.core.paths.PathResolver;
@@ -18,6 +19,9 @@ public class JavaWfw {
 		System.out.println("Registered Components => " + components);
 		List<Path> paths = PathRegister.register(components);
 		PathResolver pathResolver = new PathResolver(paths);
+
+		System.out.println("Server was started at " + ipAddr + ":" + port);
+		server = new Server(ipAddr, port, components, pathResolver);
 	}
 		
 }
