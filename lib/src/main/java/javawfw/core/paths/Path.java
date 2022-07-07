@@ -4,7 +4,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.Iterator;
 
 import javawfw.http.HttpMethod;
 
@@ -59,5 +61,24 @@ public class Path {
 			return pathVariableMap;
 		}
 		return null;
+	}
+
+	public Map<String, String> getRequestParamMap(String url) {
+		Map<String, String> requestParamMap = new LinkedHashMap<>();
+		String[] splittedUrl = url.split("\\?");
+		if (splittedUrl.length==2) {
+			String requestParamString = splittedUrl[1];
+			Iterator<String> requestParamStringIterator = Arrays.asList(requestParamString.split("&")).iterator();
+			while (requestParamStringIterator.hasNext()) {
+				String requestParam = requestParamStringIterator.next();
+				String[] splittedRequestParam = requestParam.split("=");
+				if (splittedRequestParam.length==2) {
+					String reqeustParamName = splittedRequestParam[0];
+					String reqeustParamValue = splittedRequestParam[1];
+					requestParamMap.put(reqeustParamName, reqeustParamValue);
+				}
+			}
+		}
+		return requestParamMap;
 	}
 }
