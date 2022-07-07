@@ -1,8 +1,10 @@
 package javawfw.core.paths;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 
 import javawfw.http.HttpMethod;
 
@@ -39,5 +41,23 @@ public class Path {
 
 	public Method getMethod() {
 		return method;
+	}
+
+
+	public Map<String, String> getPathVariableMap(String url) {
+		Map<String, String> pathVariableMap = new LinkedHashMap<>();
+		String[] splittedUrl = url.split("/");
+		String[] splittedPath = path.split("/");
+		if (splittedUrl.length == splittedPath.length) {
+			for (int i=0; i<splittedPath.length; i++) {
+				if(splittedPath[i].startsWith("{") && splittedPath[i].endsWith("}")) {
+					String pathVariableName = splittedPath[i].substring(1, splittedPath[i].length()-1);
+					String pathVariableValue = splittedUrl[i];
+					pathVariableMap.put(pathVariableName, pathVariableValue);
+				}
+			}
+			return pathVariableMap;
+		}
+		return null;
 	}
 }
