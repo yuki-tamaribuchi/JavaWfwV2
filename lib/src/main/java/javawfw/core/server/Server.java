@@ -33,6 +33,16 @@ public class Server {
 
 	private static class Handler implements HttpHandler {
 		public void handle(HttpExchange t) {
+			final String finalUrl = normalizeUrl(t.getRequestURI().toString());
+		}
+	}
+
+	private static String normalizeUrl(String url) {
+		String normalizedUrl = url.substring(1);
+		if (normalizedUrl.endsWith("/")) {
+				normalizedUrl = normalizedUrl.substring(0, normalizedUrl.length()-1);
+			}
+		return normalizedUrl;
 		}
 	}
 }
