@@ -3,6 +3,7 @@ package javawfw.core.server;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.io.OutputStream;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
@@ -10,6 +11,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.Headers;
 
 import javawfw.core.paths.PathResolver;
+import javawfw.http.response.IResponse;
 
 
 public class Server {
@@ -43,6 +45,23 @@ public class Server {
 				normalizedUrl = normalizedUrl.substring(0, normalizedUrl.length()-1);
 			}
 		return normalizedUrl;
+
+	private static void sendResponse(IResponse response, HttpExchange t) {
+		int status = response.getStatus();
+		long contentLength = response.getContentLength();
+		Map<String, String> options = response.getOptions();
+		Headers headers = t.getResponseHeaders();
+		options.forEach((String key, String value)->{
+			headers.set(key, value);
+		});
+
+		try {
+			t.sendResponseHeaders(status, contentLength);
+			OutputStream os = t.getResponseBody();
+			os.write(response.getBody().getBytes());
+			os.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
