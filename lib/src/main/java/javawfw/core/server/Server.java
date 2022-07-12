@@ -11,7 +11,10 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.Headers;
 
 import javawfw.core.paths.PathResolver;
+import javawfw.http.Status;
 import javawfw.http.response.IResponse;
+import javawfw.core.paths.Path;
+import javawfw.http.response.StatusResponse;
 
 
 public class Server {
@@ -36,6 +39,13 @@ public class Server {
 	private static class Handler implements HttpHandler {
 		public void handle(HttpExchange t) {
 			final String finalUrl = normalizeUrl(t.getRequestURI().toString());
+
+
+			Path path = pathResolver.resolve(finalUrl, getMethod(t.getRequestMethod()));
+			if (path==null) {
+				IResponse response = new StatusResponse(Status.NOT_FOUND);
+				sendResponse(response, t);
+			}
 		}
 	}
 
