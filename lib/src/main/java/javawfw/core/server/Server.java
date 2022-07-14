@@ -55,6 +55,8 @@ public class Server {
 				IResponse response = new StatusResponse(Status.NOT_FOUND);
 				sendResponse(response, t);
 			}
+			Method method = path.getMethod();
+			List<Object> invokeParameterList = createInvokeParameterList(method, path, finalUrl, getReqeustBody(t));
 		}
 	}
 
