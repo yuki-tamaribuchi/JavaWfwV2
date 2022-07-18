@@ -1,7 +1,11 @@
 package javawfw.core.server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Stream;
 import java.io.OutputStream;
@@ -66,6 +70,21 @@ public class Server {
 				normalizedUrl = normalizedUrl.substring(0, normalizedUrl.length()-1);
 			}
 		return normalizedUrl;
+	}
+
+
+	private static String getReqeustBody(HttpExchange t) {
+		StringBuilder builder = new StringBuilder();
+		try (Reader reader = new BufferedReader(new InputStreamReader(t.getRequestBody(), Charset.forName(StandardCharsets.UTF_8.name())))) {
+			int c = 0;
+			while ((c=reader.read()) != -1) {
+				builder.append((char)c);
+			}
+			return builder.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private static List<Object> createInvokeParameterList(Method method, Path path, String url, String requestBody) throws NullPathVariableMapException {
