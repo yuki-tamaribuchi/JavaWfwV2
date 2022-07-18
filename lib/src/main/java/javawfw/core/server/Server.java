@@ -3,6 +3,7 @@ package javawfw.core.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -116,6 +117,16 @@ public class Server {
 			}
 		});
 		return invokeParameterList;
+	}
+
+	private static IResponse getResponse(Method method, Map<Class<?>, Object> components, List<Object> invokeParameterList) {
+		try {
+			IResponse response = (IResponse) method.invoke(components.get(method.getDeclaringClass()), invokeParameterList.toArray());
+			return response;
+		}  catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private static void sendResponse(IResponse response, HttpExchange t) {
